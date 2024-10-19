@@ -1,4 +1,4 @@
-package servlet;
+package servlet.chapter2;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;

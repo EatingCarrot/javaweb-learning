@@ -1,4 +1,4 @@
-package servlet;
+package servlet.chapter1;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @WebServlet(urlPatterns = "/getData",
         initParams={
@@ -29,7 +28,6 @@ public class MyServlet extends HttpServlet {
         System.out.println("password: "+password);
         servletContext.setAttribute("username",username);
         servletContext.setAttribute("password",password);
-
     }
 
     @Override

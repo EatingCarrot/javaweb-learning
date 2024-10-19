@@ -54,7 +54,9 @@
                 this.goodsList.innerHTML = `<li class="empty-cart"><h2>购物车空空如也...</h2></li>`
                 return
             }
-            this.goodsList.querySelector('.empty-cart').remove()
+            if(this.goodsList.querySelector('.empty-cart')){
+                this.goodsList.querySelector('.empty-cart').remove()
+            }
             goods.forEach((item,index) => {
                 html += `
                 <li class="good-item">

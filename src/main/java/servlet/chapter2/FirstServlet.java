@@ -1,6 +1,5 @@
-package servlet;
+package servlet.chapter2;
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -8,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 @WebServlet("/first")
 public class FirstServlet extends HttpServlet {

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>购物车</title>
+    <link rel="stylesheet" href="css/shop.css">
+</head>
+<body>
+
+<div class="viewpoint">
+
+    <div class="goods-list">
+        <div class="list-header">
+            <h2>购物车</h2>
+        </div>
+        <ul id="goods-container">
+            <li class="empty-cart"><h2>购物车空空如也...</h2></li>
+        </ul>
+        <div class="cart">
+            <div class="cart-left">
+                <div class="icon-box icon-box-inactive">
+                    <svg t="1729255048735" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                         xmlns="http://www.w3.org/2000/svg" p-id="7795" width="200" height="200">
+                        <path d="M891.136 313.728H758.656v-23.552c0-23.552-4.608-47.232-9.088-70.784C712.96 82.432 571.392 2.304 438.912 40.064c-64 18.816-118.784 61.312-150.784 122.752-22.784 47.232-32 99.072-27.392 151.04h-127.872c-18.304 0-36.48 18.944-36.48 37.76v396.416c0 136.832 105.088 245.376 237.568 245.376h356.352c132.48 0 237.568-108.544 237.568-245.376V351.488c-0.256-18.816-18.432-37.76-36.736-37.76z m-539.008-118.016c22.784-42.496 64-75.52 109.568-89.6 95.872-28.288 200.96 28.288 228.352 132.096 4.608 18.816 4.608 33.024 4.608 51.968v23.552H329.344c-4.608-37.76 4.48-80.256 22.784-118.016z m507.008 547.456c0 94.336-77.696 174.592-168.96 174.592H333.824c-91.392 0-168.96-80.256-168.96-174.592V384.512h694.272v358.656z m0 0"
+                              fill="#ffffff" p-id="7796"></path>
+                    </svg>
+                    <div class="icon-num">1</div>
+                </div>
+                <div class="cart-total-price">
+                    ￥0
+                </div>
+            </div>
+            <div class="goCart">去结算</div>
+        </div>
+    </div>
+</div>
+<script>
+    class UI {
+        constructor() {
+            this.goodsList = document.querySelector('#goods-container');
+            this.ball = document.querySelector('.ball');
+            this.goods = []
+            this.timer = null
+            this.count = 0
+            this.getGoods()
+            this.updateFooter()
+        }
+
+        addGoods(goods) {
+            this.goods = goods
+            let html = '';
+            console.log("goods",goods)
+            if (goods.length <= 0){
+                this.goodsList.innerHTML = `<li class="empty-cart"><h2>购物车空空如也...</h2></li>`
+                return
+            }
+            this.goodsList.querySelector('.empty-cart').remove()
+            goods.forEach((item,index) => {
+                html += `
+                <li class="good-item">
+                <div class="good-item-name">${item.name}</div>
+                <div class="good-item-stock"></div>
+
+                <div class="good-item-price">￥${item.price}</div>
+                <div class="good-item-num">
+                    <div data-index="${index}" class="item-group good-item-sub circle ${item.count <= 0 ? 'inactive' : ''}">-</div>
+                    <input type="number" class="item-group num-input ${item.count <= 0 ? 'inactive' : ''}" value="${item.count}"/>
+                    <div data-index="${index}" class="good-item-add circle">+</div>
+                </div>
+                <!--                    <div class="good-item-buy">加入购物车</div>-->
+            </li>`
+            })
+
+            this.goodsList.innerHTML = html;
+        }
+        getGoods() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('get','/cart')
+            xhr.send()
+            const that = this
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(JSON.parse(xhr.responseText))
+                    const goods = JSON.parse(xhr.responseText).map(item => {
+                        return {
+                            id: item.id,
+                            name: item.name,
+                            price: item.price,
+                            count:item.count
+                        }
+                    })
+                    that.addGoods(goods)
+                    that.updateFooter()
+                }
+            }
+        }
+        increment(index) {
+            if(this.timer){
+                clearTimeout(this.timer)
+            }
+            const input = this.goodsList.children[index].querySelector('input');
+            // input.value = parseInt(input.value) + 1;
+            // this.goods[index].count = parseInt(input.value)
+            // this.cartAnimation()
+
+
+            this.jump(index)
+            this.goods[index].count++
+            input.value = this.goods[index].count
+            if (this.goods[index].count > 0) {
+                this.goodsList.children[index].querySelectorAll('.item-group').forEach(item => item.classList.remove('inactive'))
+            }
+            this.updateFooter()
+            // this.goods[index].count = parseInt(input.value)
+            this.timer = setTimeout(()=>{
+                const id  = this.goods[index].id
+                console.log(this.goods)
+                const count = this.goods[index].count
+                fetch('/cartAdd',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        id,
+                        count
+                    })
+                }).then(res=>res.json())
+                    .then(data=>{
+                        this.getGoods()
+                        console.log(data)
+                    })
+            },200)
+        }
+        decrement(index) {
+            if(this.timer){
+                clearTimeout(this.timer)
+            }
+            const input = this.goodsList.children[index].querySelector('input');
+            this.goods[index].count--
+            if(this.goods[index].count <= 0){
+                this.goods[index].count = 0
+                this.goodsList.children[index].querySelectorAll('.item-group').forEach(item => item.classList.add('inactive'))
+            }
+            input.value = this.goods[index].count
+            // input.value = parseInt(input.value) - 1;
+            // this.goods[index].count = parseInt(input.value)
+            this.updateFooter()
+
+            this.timer = setTimeout(()=>{
+                const id  = this.goods[index].id
+                console.log(this.goods)
+                const count = this.goods[index].count
+                fetch('/cartAdd',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        id,
+                        count
+                    })
+                }).then(res=>res.json())
+                    .then(data=>{
+                        this.getGoods()
+                        console.log(data)
+                    })
+            },200)
+        }
+        goodsCountInCart(){
+            return this.goods.reduce((acc,cur)=>{
+                return acc + cur.count
+            },0)
+        }
+        computedPrice(){
+            const price =  this.goods.reduce((pre,cur)=>{
+                return pre + (cur.count * cur.price)
+            },0)
+            console.log('price',price)
+            return price
+        }
+        updateFooter(){
+            if (this.goodsCountInCart() > 0) {
+                document.querySelector('.icon-box').classList.remove('icon-box-inactive')
+                document.querySelector('.icon-num').style.display = 'block'
+                console.log(this.goodsCountInCart())
+                document.querySelector('.icon-num').innerHTML = this.goodsCountInCart()
+                const price = document.querySelector('.cart-total-price')
+                price.innerHTML = '￥'+this.computedPrice()
+            }else{
+                document.querySelector('.icon-num').style.display = 'none'
+                document.querySelector('.icon-box').classList.add('icon-box-inactive')
+                const price = document.querySelector('.cart-total-price')
+                console.log("priceDom:",price)
+                price.innerHTML = '￥0'
+            }
+        }
+        cartAnimation(){
+            const iconBox =document.querySelector('.icon-box')
+            iconBox.classList.add('animation')
+            iconBox.addEventListener('animationend',(e)=>{
+                iconBox.classList.remove('animation')
+            })
+        }
+        jump(index){
+            const addBut = this.goodsList.children[index].querySelector('.good-item-add')
+            const origin = addBut.getBoundingClientRect()
+            const source = {
+                x:origin.left,
+                y:origin.top
+            }
+
+            const carIcon = document.querySelector('.icon-box').getBoundingClientRect()
+            const targetX = carIcon.left+carIcon.width/2
+            const targetY = carIcon.top+20
+            const target = {
+                x:targetX,
+                y:targetY
+            }
+            /**
+             * <div class="ball">
+             *     <div class="inner-ball circle"></div>
+             * </div>
+             */
+            const ballBox = document.createElement('div')
+            ballBox.className = 'ball'
+            const boll = document.createElement('div')
+            ballBox.style.transform = `translateX(${source.x}px)`
+            boll.style.transform = `translateY(${source.y}px)`
+            boll.innerHTML = '+'
+            boll.className = 'circle inner-ball'
+            ballBox.appendChild(boll)
+            document.body.appendChild(ballBox)
+
+            ballBox.clientWidth;
+            boll.clientWidth
+            ballBox.style.transform = `translateX(${target.x}px)`
+            boll.style.transform = `translateY(${target.y}px)`
+            ballBox.addEventListener('transitionend',()=>{
+                    ballBox.remove()
+                    this.cartAnimation()
+                },
+                {
+                    once:true
+                })
+            console.log(source,target)
+        }
+    }
+    const ui = new UI()
+    ui.goodsList.addEventListener('click',(e)=>{
+        if (e.target.classList.contains('good-item-add')) {
+            console.log(e.target)
+            const index = e.target.dataset.index
+            ui.increment(index)
+        }else if (e.target.classList.contains('good-item-sub')){
+            console.log(e.target)
+            const index = e.target.dataset.index
+            ui.decrement(index)
+        }
+    })
+    document.querySelector('.icon-box').addEventListener('click',(e)=>{
+        window.location.href = 'cart.html'
+    })
+</script>
+</body>
+</html>

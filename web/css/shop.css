@@ -1,0 +1,245 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    position: relative;
+}
+.viewpoint{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    /*background-color: #f5f5f5;*/
+    position: relative;
+    overflow: hidden;
+    /*background: linear-gradient(to right, #C1CFA1 0%, #A5B68D 33%, #EDE8DC 66%, #E7CCCC 100%);*/
+
+}
+.empty-cart h2{
+    text-align: center;
+}
+ul{
+    list-style: none;
+}
+.goods-list{
+
+    position: relative;
+    width: 500px;
+    height: 500px;
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 53px 30px 30px 30px;
+    box-shadow: 0 0 40px 5px #ddd;
+    overflow: hidden;
+}
+.good-item{
+    display: flex;
+    width: 100%;
+    background-color: #fafafa;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    margin: 10px 0;
+    transition: all .3s;
+    box-sizing: border-box;
+}
+.good-item:hover{
+    box-shadow: 0 0 40px 5px #ddd;
+}
+
+.good-item-num{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+    width: 60px;
+}
+.num-input{
+    width: 20px;
+    text-align: center;
+    border-radius: 6px;
+    border: 1px solid #bbb;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.circle{
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    background-color: #0d6efd;
+    text-align: center;
+    line-height: 13px;
+    font-weight: bold;
+    color: white;
+    cursor:pointer;
+    user-select: none;
+}
+.good-item-buy{
+    width: 100px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background-color: #fb602c;
+    border-radius: 10px;
+    color: #FFF;
+    cursor: pointer;
+}
+
+.good-item-price{
+    color: #e1251b;
+}
+.cart{
+    padding:5px 30px;
+    position: absolute;
+    /*z-index: 20;*/
+    bottom: 0;
+    left: 0;
+    background-color: #888;
+    width: 100%;
+    height: 60px;
+    border-radius: 10px 10px 0 0;
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+.icon{
+    /*background-color: #fff;*/
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    line-height: 40px;
+    text-align: center;
+    color: #888;
+    cursor: pointer;
+}
+.icon-box{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #0d6efd;
+    width: 50px;
+    height: 50px;
+    z-index: 20;
+}
+.icon-box-inactive{
+    background-color: #888;
+    box-shadow: 0 0 5px 3px #999;
+}
+.icon-num{
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    background-color: #e1251b;
+    border-radius: 50%;
+    color: white;
+}
+.list-header{
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 20;
+    height: 50px;
+    width: 100%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ddd;
+}
+.list-header h2{
+    text-align: center;
+    /*position: absolute;*/
+    /*left: 50%;*/
+    /*transform: translateX(-50%);*/
+}
+.good-item-name{
+    width: 200px;
+}
+.good-item-price{
+    width: 50px;
+}
+.inactive{
+    display: none;
+}
+.goCart{
+    --w: 70px;
+    --h: 40px;
+    width: var(--w);
+    height: var(--h);
+    background-color: #0d6efd;
+    color: white;
+    line-height: 40px;
+    text-align: center;
+    border-radius: calc(var(--h) / 2);
+}
+.ball{
+    position: fixed;
+    left:0;
+    top: 0;
+    transition: .6s linear;
+
+    /*animation: moveX .5s forwards;*/
+}
+.inner-ball{
+    transition: .6s cubic-bezier(0.5,-0.5,1,1);
+    /*animation: moveY .5s cubic-bezier(0.18,-0.34, 0.68, 0.16) forwards;*/
+}
+
+.animation{
+    animation: cartScale .5s forwards;
+}
+
+@keyframes moveX {
+    to{
+        transform: translateX(450px);
+    }
+}
+
+@keyframes moveY {
+    to{
+        transform: translateY(400px);
+    }
+}
+@keyframes cartScale {
+    0%{
+        transform: scale(1);
+    }
+    25%{
+        transform: scale(0.8);
+    }
+    50%{
+        transform: scale(1.2);
+    }
+    75%{
+        transform: scale(0.9);
+    }
+    100%{
+        transform: scale(1);
+    }
+}
+.cart-left{
+    display: flex;
+    align-items: center;
+}
+.cart-total-price{
+    margin-left: 20px;
+}
+.cart-total-price-active{
+    color: #e1251b;
+}
+

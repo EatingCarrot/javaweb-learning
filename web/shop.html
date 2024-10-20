@@ -11,6 +11,7 @@
 
     <div class="goods-list">
         <div class="list-header">
+
             <h2>商品列表</h2>
         </div>
         <ul id="goods-container">
@@ -44,7 +45,7 @@
                 </div>
             </div>
 
-            <div class="goCart">去结算</div>
+            <div class="goCart">购物车</div>
         </div>
     </div>
 </div>
@@ -73,7 +74,7 @@
                 <div class="good-item-price">￥${item.price}</div>
                 <div class="good-item-num">
                     <div data-index="${index}" class="item-group good-item-sub circle ${item.count <= 0 ? 'inactive' : ''}">-</div>
-                    <input type="number" class="item-group num-input ${item.count <= 0 ? 'inactive' : ''}" value="${item.count}"/>
+                    <input type="number" disabled class="item-group num-input ${item.count <= 0 ? 'inactive' : ''}" value="${item.count}"/>
                     <div data-index="${index}" class="good-item-add circle">+</div>
                 </div>
             </li>`
@@ -266,6 +267,9 @@
         }
     })
     document.querySelector('.icon-box').addEventListener('click',(e)=>{
+        window.location.href = 'cart.html'
+    })
+    document.querySelector('.goCart').addEventListener('click',(e)=>{
         window.location.href = 'cart.html'
     })
 </script>
